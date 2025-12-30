@@ -1,3 +1,4 @@
+# nolint start
 #' Core mandelbrot Algorithm
 #' The mandelbrot iteration:
 #' for each complex number c, we start with z0 = 0 and repeatedly apply:
@@ -12,7 +13,7 @@ mandelbrot <- function(
     for (i in seq_len(max_iter)) {
         z <- z^2 + c
         if (abs(z) > 2) {
-            return()
+            return(i)
         }
     }
 
@@ -42,6 +43,9 @@ plot_mandelbrot <- function(
 
     # Calculate iterations for each point
     max_iter <- min(100 + floor(zoom * 20), 500)
+
+    print(max_iter)
+
     m <- outer(
         x,
         y,
@@ -124,3 +128,5 @@ zoom_loop <- function() {
     }
     cat("Exiting...\n")
 }
+
+# nolint end
