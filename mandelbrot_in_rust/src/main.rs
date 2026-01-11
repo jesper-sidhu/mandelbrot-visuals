@@ -47,19 +47,12 @@ fn mandelbrot(c_real: f64, c_imag: f64, max_iter: u32) -> u32 {
     let mut z_imag: f64 = 0.0;
     let mut iter: u32 = 0;
 
-    while z_real * z_real + z_imag * z_imag <= 4.0 && iter < max_iter {
-        let temp = z_real * z_real - z_imag * z_imag + c_real;
+    while z_real.powi(2) + z_imag.powi(2) <= 4.0 && iter < max_iter {
+        let temp = z_real.powi(2) - z_imag.powi(2) + c_real;
         z_imag = 2.0 * z_real * z_imag + c_imag;
         z_real = temp;
         iter += 1;
     }
-
-    //    while z_real.powi(2) + z_imag.powi(2) <= 4.0 && iter < max_iter {
-    //        let temp = z_real.powi(2) - z_imag.powi(2) + c_real;
-    //        z_imag = 2.0 * z_real * z_imag + c_imag;
-    //        z_real = temp;
-    //        iter += 1;
-    //    }
 
     iter
 }
@@ -76,30 +69,30 @@ fn colour_from_iter(iter: u32, max_iter: u32) -> Color {
         let sat = 0.8;
         let val = if t < 0.5 { t * 2.0 } else { 1.0 };
 
-        //         let colour = hsv_to_rgb(&hue, &sat, &val);
-        //
-        //         colour
-        //     }
-        // }
-        //
-        // fn hsv_to_rgb(hue: &f32, sat: &f32, val: &f32) -> Color {
-        // HSL to RGB conversion
-        let c = val * sat;
-        let x = c * (1.0 - ((hue / 60.0) % 2.0 - 1.0).abs());
-        let m = val - c;
+        let colour = hsv_to_rgb(&hue, &sat, &val);
 
-        let (r, g, b) = match (hue / 60.0) as i32 {
-            0 => (c, x, 0.0),
-            1 => (x, c, 0.0),
-            2 => (0.0, c, x),
-            3 => (0.0, x, c),
-            4 => (x, 0.0, c),
-            _ => (c, 0.0, x),
-        };
-
-        Color::new(r + m, g + m, b + m, 1.0)
+        colour
     }
 }
+
+fn hsv_to_rgb(hue: &f32, sat: &f32, val: &f32) -> Color {
+    // HSL to RGB conversion
+    let c = val * sat;
+    let x = c * (1.0 - ((hue / 60.0) % 2.0 - 1.0).abs());
+    let m = val - c;
+
+    let (r, g, b) = match (hue / 60.0) as i32 {
+        0 => (c, x, 0.0),
+        1 => (x, c, 0.0),
+        2 => (0.0, c, x),
+        3 => (0.0, x, c),
+        4 => (x, 0.0, c),
+        _ => (c, 0.0, x),
+    };
+
+    Color::new(r + m, g + m, b + m, 1.0)
+}
+//}
 
 fn render_mandelbrot(view: &View) -> Image {
     let mut img = Image::gen_image_color(WIDTH as u16, HEIGHT as u16, BLACK);
